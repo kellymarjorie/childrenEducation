@@ -36,7 +36,9 @@ void loop() {
   duration = pulseIn(SECOND_ECHO, HIGH);
   second_distance = duration / 29 / 2;
 
-  delay(10);
-  Serial.println("First sonar: " + (String)first_distance);
-  Serial.println("Second sonar: " + (String)second_distance);
+  //Delay of 200 ms just to dont flood the serial port and make the
+  //things a little bit easier
+  delay(200);
+  //The reader should split the values by , and read it... 
+  Serial.println((String)first_distance + "," + (String)second_distance);
 }
