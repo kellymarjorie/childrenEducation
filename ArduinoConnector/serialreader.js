@@ -1,4 +1,21 @@
 const SerialPort = require("serialport");
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const socket = require('socket.io')(server);
+const port = process.env.PORT || 8080;
+let socketClients = [];
+
+server.listen(port, function () {
+    console.log(`Server listening at port ${port}`);
+});
+
+app.use(express.static(__dirname + '/../Frontend'));
+
+socket.on("connect", function (client) {
+    console.log("New Connection!");
+    socketClients.push(client);
+});
 
 const serialPort = new SerialPort('/dev/ttyUSB0', {
     baudRate: 115200,
@@ -8,10 +25,12 @@ const serialPort = new SerialPort('/dev/ttyUSB0', {
 serialPort.on('open',function(){
     
     serialPort.on('data', function(data){
-        //We need to EMIT on socket.io
-        //and the UI can catch what is happening
-        //with the board
-        //TIP: Check for negatives... some time the sonar doesn't work good.
-        console.log(data.toString());
+        const serialData = data.toString();
+        console.log(serialData);
+        socketClients.forEach((item) => {
+            item.emit('coords', { 
+                value: serialData 
+            });
+        });
     });
 });
