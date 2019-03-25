@@ -22,8 +22,20 @@ const serialPort = new SerialPort('/dev/ttyUSB0', {
     parser: new SerialPort.parsers.Readline("\n")
 });
 
+//FAKE: Remove this block once arduino is connected
+setInterval(function() {
+    let rnd1 = parseInt(Math.random() * 400);
+    let rnd2 = parseInt(Math.random() * 400);
+    console.log(`Emit:${rnd1} - ${rnd2}`);
+    socketClients.forEach((item) => {
+        item.emit('coords', { 
+            value: rnd1 + "," + rnd2 
+        });
+    });
+}, 1000);
+//*****/
+
 serialPort.on('open',function(){
-    
     serialPort.on('data', function(data){
         const serialData = data.toString();
         console.log(serialData);

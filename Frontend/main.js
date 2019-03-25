@@ -71,6 +71,20 @@ class Game {
     this.stickTwo = new Pallet(380);
 
     this.ball = new Ball();
+    
+    this.connectSocket();
+  }
+
+  connectSocket() {
+    let socket = io();
+    socket.on("coords", (data) => {
+      console.log(data);
+      if (data.value !== "") {
+        var coors = data.value.split(',');
+        game.stickOne.update(coors[0]);
+        game.stickTwo.update(coors[1]);
+      }
+    });
   }
 
   mainLoop() {
@@ -78,8 +92,6 @@ class Game {
     game.context.fillRect(0, 0, 400, 400);
     game.context.save();
 
-    // game.stickOne.update();
-    // game.stickTwo.update();
     game.ball.update();
 
     game.stickOne.draw(game.context);
