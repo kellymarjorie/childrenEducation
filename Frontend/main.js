@@ -1,3 +1,6 @@
+const canvasWidth = 500;
+const canvasHeight = 400;
+
 class Pallet {
   constructor(x){
     this.x = x;
@@ -22,12 +25,14 @@ class Ball {
     this.y = 215;
     this.xDirection = 1;
     this.yDirection = 1;
+    this.width = 20;
+    this.height = 20;
   }
 
   isColliding(p) {
-    if (this.x + 20 < p.x)
+    if (this.x + this.width < p.x)
         return false;
-    if (this.y + 20 < p.y)
+    if (this.y + this.height < p.y)
         return false;
     if (this.x > p.x + p.width)
         return false;
@@ -41,10 +46,10 @@ class Ball {
     this.x -= this.xDirection;
     this.y -= this.yDirection;
 
-    if (this.x <= 0 || this.x >= 380) {
+    if (this.x <= 0 || this.x >= canvasWidth - this.width) {
       this.xDirection *= -1;
     }
-    if (this.y <= 0 || this.y >= 380) {
+    if (this.y <= 0 || this.y >= canvasHeight - this.height) {
       this.yDirection *= -1;
     }
 
@@ -54,23 +59,25 @@ class Ball {
   }
   
   draw(context) {
-    context.fillStyle = "black";
-    context.fillRect(this.x, this.y, 20, 20);
+    context.fillStyle = "white";
+    context.fillRect(this.x, this.y, this.width, this.height);
   }
 }
 
 class Game {
   constructor() {
     let canvas = document.createElement('canvas');
-    canvas.width = 400;
-    canvas.height = 400;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
     document.body.appendChild(canvas);
     this.context = canvas.getContext('2d');
 
     this.stickOne = new Pallet(10);
-    this.stickTwo = new Pallet(380);
-
+    this.stickTwo = new Pallet(canvasWidth - 20);
     this.ball = new Ball();
+
+    this.playerOneScrore = 0;
+    this.playerTwoScrore = 0;
     
     this.connectSocket();
   }
@@ -81,6 +88,8 @@ class Game {
       console.log(data);
       if (data.value !== "") {
         var coors = data.value.split(',');
+        coors[0] = parseInt(coors[0]);
+        coors[1] = parseInt(coors[1]);
 
         if (coors[0] < 0 || coors[1] < 0 || coors[0] > 400 || coors[1] > 400) {
           return;
@@ -93,8 +102,8 @@ class Game {
   }
 
   mainLoop() {
-    game.context.fillStyle = "cyan";
-    game.context.fillRect(0, 0, 400, 400);
+    game.context.fillStyle = "black";
+    game.context.fillRect(0, 0, canvasWidth, canvasHeight);
     game.context.save();
 
     game.ball.update();
@@ -102,6 +111,11 @@ class Game {
     game.stickOne.draw(game.context);
     game.stickTwo.draw(game.context);
     game.ball.draw(game.context);
+
+    game.context.fillStyle = "white";
+    game.context.font = "20pt arial";
+    game.context.fillText(game.playerOneScrore, 40, 30);
+    game.context.fillText(game.playerTwoScrore, canvasWidth - 60, 30);
 
     game.context.restore();
 
