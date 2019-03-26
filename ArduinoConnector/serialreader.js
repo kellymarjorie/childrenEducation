@@ -23,7 +23,7 @@ const serialPort = new SerialPort('/dev/ttyUSB0', {
 });
 
 //FAKE: Remove this block once arduino is connected
-setInterval(function() {
+/*setInterval(function() {
     let rnd1 = parseInt(Math.random() * 400);
     let rnd2 = parseInt(Math.random() * 400);
     console.log(`Emit:${rnd1} - ${rnd2}`);
@@ -32,7 +32,7 @@ setInterval(function() {
             value: rnd1 + "," + rnd2 
         });
     });
-}, 1000);
+}, 1000);*/
 //*****/
 
 serialPort.on('open',function(){

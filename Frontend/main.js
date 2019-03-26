@@ -81,6 +81,11 @@ class Game {
       console.log(data);
       if (data.value !== "") {
         var coors = data.value.split(',');
+
+        if (coors[0] < 0 || coors[1] < 0 || coors[0] > 400 || coors[1] > 400) {
+          return;
+        }
+
         game.stickOne.update(coors[0]);
         game.stickTwo.update(coors[1]);
       }
