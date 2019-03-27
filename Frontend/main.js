@@ -47,7 +47,16 @@ class Ball {
     this.y -= this.yDirection;
 
     if (this.x <= 0 || this.x >= canvasWidth - this.width) {
+      if (this.x <= 0) {
+        game.playerTwoScrore++;
+      } else {
+        game.playerOneScrore++;
+      }
+
+      //reset the ball position (Game start again)
       this.xDirection *= -1;
+      this.x = 200;
+      this.y = 215;
     }
     if (this.y <= 0 || this.y >= canvasHeight - this.height) {
       this.yDirection *= -1;
